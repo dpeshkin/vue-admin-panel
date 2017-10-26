@@ -1,0 +1,18 @@
+header {
+    background-color: $accent;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    padding: 30px 35px;
+}
+
+.title {
+    font-size: 28px;
+    margin-right: auto;
+}
+
+.logout {
+    font-size: 16px;
+    text-decoration: none;
+    border-bottom: 1px dashed #fff;
+}

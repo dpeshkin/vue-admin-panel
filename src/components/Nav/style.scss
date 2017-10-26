@@ -1,0 +1,21 @@
+.tabs {
+    width: 100%;
+    background-color: $grey;
+}
+
+.list {
+    display: flex;
+}
+
+.link {
+    display: block;
+    text-transform: uppercase;
+    padding: 25px 70px;
+    font-weight: 700;
+    border-right: solid 2px #fff;
+
+    &:hover {
+        background-color: #fff;
+        color: $accent;
+    }
+}

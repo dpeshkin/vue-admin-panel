@@ -2,11 +2,14 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: './src/main.js',
+  entry: {
+    js: './src/main.js',
+    styles: './src/stylesheets/index.js'
+  },
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'build.js'
+    filename: '[name].build.js'
   },
   module: {
     rules: [
@@ -15,14 +18,33 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this necessary.
-            'scss': 'vue-style-loader!css-loader!sass-loader',
-            'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
-          }
+            scss: [
+              'vue-style-loader',
+              'css-loader',
+              'sass-loader',
+              {
+                loader: 'sass-resources-loader',
+                options: {
+                  resources: [
+                    './src/stylesheets/variables.scss',
+                    './src/stylesheets/mixins.scss'
+                  ]
+                }
+              }
+            ],
+          },
           // other vue-loader options go here
+          esModule: false, // необходимо чтобы убрать ошибку Vue Failed to mount component: template or render function not defined
+          
         }
+      },
+      {
+        test: /\.(scss|css)$/,
+        use: [
+          'style-loader', 
+          'css-loader', 
+          'sass-loader'
+        ]
       },
       {
         test: /\.js$/,
@@ -41,11 +63,12 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js'
-    }
+    },
+    extensions: ['.js', '.vue'] // пропишем расширения, чтобы пути до файлов сделать короче
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true,
+    noInfo: false,
     overlay: true
   },
   performance: {
