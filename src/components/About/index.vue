@@ -2,25 +2,43 @@
 .about
     h2 Страница "Обо мне"
     skills-list(
-        v-for="(skill, index) in skills",
+        v-for="(skill, index) in skillsList",
+        :skills='getSkills',
         :key="index",
-        :skillType="skill"
+        :skillType="skill",
+        @addSkill="addSkill"
     )
         
 </template>
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { $eventBus } from '../../main'
+
 export default {
     data: function () {
         return {
-            skills: [
+            skillsList: [
                 "Frontend",
                 "Backend",
                 "Workflow"
             ]
         }
     },
+    computed: {
+        ...mapGetters(['getSkills'])
+    },
+    methods: {
+        ...mapActions(['fetchSkills']),
+        ...mapMutations(['addNewSkill', 'removeSavedSkill']),
+        addSkill(skill) {
+            this.addNewSkill(skill);
+        }
+    },
     created() {
-        console.log(this)
+        this.fetchSkills();
+        $eventBus.$on('removeSkill', id => {
+            this.removeSavedSkill(id);
+        })
     },
     components: {
         skillsList: require('./Skills-list')
