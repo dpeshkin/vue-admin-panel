@@ -21,6 +21,7 @@ module.exports = {
             scss: [
               'vue-style-loader',
               'css-loader',
+              'svg-fill-loader/encodeSharp',
               'sass-loader',
               {
                 loader: 'sass-resources-loader',
@@ -52,11 +53,20 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gifza)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          'url-loader',
+          {
+            loader: 'svg-fill-loader?fill=#fff'
+          }
+        ]
       }
     ]
   },

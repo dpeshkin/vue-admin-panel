@@ -2,13 +2,19 @@
     .tabs
         ul.list
             li.item(v-for='tab in tabs')
-                a(href='').link {{tab}}
+                router-link(
+                    :to='tab.href'
+                ).link {{tab.name}}
 </template>
 <script>
 export default {
     data: function() {
         return {
-            tabs: ['Таб 1', 'Таб 2', 'Таб 3', 'Таб 4']
+            tabs: [
+                {name: "About" , href: '/'},
+                {name: "Blog" , href: '/blog'},
+                {name: "Works" , href: '/works'},
+            ]
         }
     }
 }

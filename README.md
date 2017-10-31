@@ -196,13 +196,80 @@ created() {
 ```bash
 npm i simple-vue-validator
 ```
-30. ВАлидатор подключается как миксин, в skills-list:
+30. ВАлидатор подключается как миксин, в skills-list, так же необходимо заимпортить объект валидатора:
 ```javascript
+import { Validator } from 'simple-vue-validator';
 mixins: [require('simple-vue-validator').mixin],
 ```
-31. Валидируются не инпуты а данные внутри объекта data
-
-131:00
+31. Валидируются не инпуты а данные внутри объекта data, в skill-item добавим свойство vlidators и проверим поля на пустоту: 
+```javascript
+validators: {
+  'newSkill'(value) {
+    return Validator.value(value).required('Скилл не может быть пустым!');
+  }
+},
+```
+32. Для вывода ошибки есть глобальный объект validation который можно подключить к компоненту(рядом с инпутом:
+```javascript
+div {{ validation.firstError('newSkill')}}
+```
+33. Задизаблим кнопку и добавим красную рамку инпуту в случае ошибки валидации(черз класс):
+```javascript
+button(
+  :disabled="validation.hasError('newSkill')"
+)
+input(
+  :class="{error : validation.hasError('newSkill')}"
+)
+```
+34. Сделаем невозмодность отправки пустого поля, для этого в метод addSkill добавим метод $validate() который возвращает промиc, в котором в случае успешной валидации будет запускаться наше добавление скилла. Так же необходимо скинуть валидацию с помощью встроенного метода reset,, иначе после отправки и обнуления поля сразу будет вылазить валидация:
+```javascript
+addSkill(skillType) {
+  this.$validate().then(success => {
+    if (!success) return;
+    this.$emit("addSkill", {
+      id: Math.round(Math.random() * 10),
+      name: this.newSkill,
+      percents: 0,
+      type: this.checkSkillType(skillType)
+    }),
+    this.newSkill = "";
+    this.validation.reset();
+  });
+},
+```
+## Работа с .svg
+1. Установим svg-fill-loader
+```bash
+npm i -D svg-fill-loader
+```
+2. Подключаем его в webpack.config.js  до css-loader:
+```javascript
+'svg-fill-loader/encodeSharp',
+```
+3. Укажем вебпакку как обрабатывать свг:
+```javascript
+{
+  test: /\.svg$/,
+  use: [
+    'url-loader',
+    {
+      loader: 'svg-fill-loader?fill=#fff'
+    }
+  ]
+}
+```
+4. Создадим sass миксин для оьработки svg:
+```scss
+@mixin svg($url, $color) {
+   $base-color: str-slice(inspect($color), 2);
+   background-image: unquote('url("' + $url + "?fill=%23" + $base-color +'")');
+ }
+```
+5. Теперь svg можно вставлять через цсс в формате base64
+```scss
+@include svg("~img/phone.svg", #a23b43);
+```
 
 
 

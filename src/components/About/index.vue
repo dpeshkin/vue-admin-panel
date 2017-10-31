@@ -8,6 +8,7 @@
         :skillType="skill",
         @addSkill="addSkill"
     )
+    .icon
         
 </template>
 <script>
